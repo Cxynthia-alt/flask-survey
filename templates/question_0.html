@@ -3,7 +3,7 @@
 {% block content %}
 
 <body>
-  <form action="/questions/0" method='POST'>
+  <form action="/answer">
     <label for="yes_no_radio">{{question_list[0].question}}</label>
     <p>
       <input type="radio" name="options" checked>{{question_list[0].choices[0]}}</input>

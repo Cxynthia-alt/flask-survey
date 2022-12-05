@@ -47,6 +47,6 @@ def thank_you_page():
 
 @app.route('/answer')
 def collect_answer():
-    answer_0 = request.form['options']
+    answer_0 = request.args['options']
     responses.add(answer_0)
     return render_template('answer.html', responses=responses)
