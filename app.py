@@ -15,29 +15,20 @@ instructions = satisfaction_survey.instructions
 question_list = satisfaction_survey.questions
 
 
-@app.route('/questions')
+@app.route('/')
 def survey_questions():
     return render_template('start.html', title=title, instructions=instructions)
 
 
-@app.route('/questions/0')
-def question_0():
-    return render_template('question_0.html', question_list=question_list)
-
-
-@app.route('/questions/1')
-def question_1():
-    return render_template('question_1.html', question_list=question_list)
-
-
-@app.route('/questions/2')
-def question_2():
-    return render_template('question_2.html', question_list=question_list)
-
-
-@app.route('/questions/3')
-def question_3():
-    return render_template('question_3.html', question_list=question_list)
+@app.route('/questions/<int:qid>')
+def questions(qid):
+    current_question = question_list[qid].question
+    current_choice_0 = question_list[qid].choices[0]
+    current_choice_1 = question_list[qid].choices[1]
+    if (qid > len(question_list)):
+        flash('This is not part of the question, please continue the survey where you stopped :)')
+    else:
+        return render_template('questions.html', current_question=current_question, qid=qid, current_choice_0=current_choice_0, current_choice_1=current_choice_1)
 
 
 @app.route('/thanks')
@@ -45,8 +36,12 @@ def thank_you_page():
     return render_template('thanks.html')
 
 
-@app.route('/answer')
+@app.route('/answer', methods=['POST'])
 def collect_answer():
-    answer_0 = request.args['options']
-    responses.add(answer_0)
+    current_answer = request.form['options']
+    responses.append(current_answer)
+    if len(responses) < len(question_list):
+        return redirect(f"/questions/{len(responses)}")
+    elif len(responses) == len(question_list):
+        return redirect('/thanks')
     return render_template('answer.html', responses=responses)
