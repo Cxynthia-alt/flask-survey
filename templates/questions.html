@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Survey{% endblock %}
+{% block content %}
+
+<body>
+  <form action="/answer" method='POST'>
+    <label for="yes_no_radio">{{current_question}}</label>
+    <p>
+      <input type="radio" name="options" value="{{current_choice_0}}" checked>{{current_choice_0}}</input>
+    </p>
+    <p>
+      <input type="radio" name="options" value="{{current_choice_1}}">{{current_choice_1}}</input>
+    </p>
+    <input type="submit" class="btn btn-primary" value="Next">
+  </form>
+</body>
+{% endblock %}
