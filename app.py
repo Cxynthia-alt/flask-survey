@@ -44,4 +44,6 @@ def collect_answer():
         return redirect(f"/questions/{len(responses)}")
     elif len(responses) == len(question_list):
         return redirect('/thanks')
-    return render_template('answer.html', responses=responses)
+    else:
+        flash('please continue the survey where you stopped :)')
+    # return render_template('thanks.html', responses=responses)
