@@ -29,14 +29,21 @@ def start_survey():
 
 @app.route('/questions/<int:qid>')
 def questions(qid):
-
+    responses = session.get(RESPONSES_KEY)
+    if (responses is None):
+        # trying to access question page too soon
+        return redirect('/')
+    if (len(responses) == len(question_list)):
+        # make sure user won't be able to access previous questions once they finish the survey
+        return redirect("/thanks")
+    if (len(responses) != qid):
+        # Trying to access questions out of order.
+        flash(f"The question that you're requesting doesn't exist", 'skip_question')
+        return redirect(f"/questions/{len(responses)}")
     current_question = question_list[qid].question
     current_choice_0 = question_list[qid].choices[0]
     current_choice_1 = question_list[qid].choices[1]
-    if (qid > len(question_list)):
-        flash('This is not part of the question, please continue the survey where you stopped :)')
-    else:
-        return render_template('questions.html', current_question=current_question, qid=qid, current_choice_0=current_choice_0, current_choice_1=current_choice_1)
+    return render_template('questions.html', current_question=current_question, qid=qid, current_choice_0=current_choice_0, current_choice_1=current_choice_1)
 
 
 @app.route('/thanks')
@@ -52,11 +59,8 @@ def collect_answer():
     session[RESPONSES_KEY] = responses
     if len(responses) < len(question_list):
         return redirect(f"/questions/{len(responses)}")
-    elif len(responses) == len(question_list):
-        return redirect('/thanks')
     else:
-        flash('please continue the survey where you stopped :)')
-    # return render_template('thanks.html', responses=responses)
+        return redirect('/thanks')
 
 
 # fruits = session['fruits']
